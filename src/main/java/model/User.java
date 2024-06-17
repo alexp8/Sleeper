@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +25,7 @@ public class User {
         return name;
     }
 
-    public static User getUserFromMatchup(Matchup matchup, List<Roster> rosters, List<User> users) {
+    public static User getUserFromMatchup(@NotNull Matchup matchup, List<Roster> rosters, List<User> users) {
         String userId = rosters.stream()
                 .filter(x -> x.getRosterId() == matchup.getRosterId())
                 .map(Roster::getOwnerId)

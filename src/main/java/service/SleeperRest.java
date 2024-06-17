@@ -20,7 +20,7 @@ public class SleeperRest {
             throw new RuntimeException("Failed fetching players: " + response.getBody());
         }
 
-        return response.getBody().asString();
+        return response.getBody().asPrettyString();
     }
 
     public static Map<String, Player> getNflPlayers() {
@@ -85,6 +85,17 @@ public class SleeperRest {
         }
 
         return response.jsonPath().getList("", Matchup.class);
+    }
+
+    public static String getMatchupsContent(String leagueId, String week) {
+        String url = String.format("https://api.sleeper.app/v1/league/%s/matchups/%s", leagueId, week);
+        Response response = getResponse(url);
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed fetching matchups: " + response.getBody());
+        }
+
+        return response.body().asPrettyString();
     }
 
     private static Response getResponse(String url) {

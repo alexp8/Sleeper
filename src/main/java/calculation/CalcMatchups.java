@@ -23,7 +23,7 @@ public class CalcMatchups extends Calculation {
         List<Metric> metrics = new ArrayList<>();
 
         // calc cumulative points per user, at every position
-        cumulativePointCalculation(rosters, matchups, users, runningBackIds, quarterBackIds, wideReceiverIds, tightEndIds, metrics);
+        cumulativeRosterPointCalculation(rosters, matchups, users, runningBackIds, quarterBackIds, wideReceiverIds, tightEndIds, metrics);
 
         // peak weekly stats
         weeklyPeakPts(nflPlayers, matchups);
@@ -72,7 +72,7 @@ public class CalcMatchups extends Calculation {
 
     }
 
-    private static void cumulativePointCalculation(List<Roster> rosters, List<Matchup> matchups, List<User> users, List<String> runningBackIds, List<String> quarterBackIds, List<String> wideReceiverIds, List<String> tightEndIds, List<Metric> metrics) {
+    private static void cumulativeRosterPointCalculation(List<Roster> rosters, List<Matchup> matchups, List<User> users, List<String> runningBackIds, List<String> quarterBackIds, List<String> wideReceiverIds, List<String> tightEndIds, List<Metric> metrics) {
 
         // for every user, grab how many points they have scored for each position on a starting lineup
         for (User user : users) {

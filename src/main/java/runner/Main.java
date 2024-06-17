@@ -9,10 +9,7 @@ import org.apache.logging.log4j.Logger;
 import service.SleeperRest;
 import util.FileHelper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -21,14 +18,15 @@ public class Main {
     private static final String CAVE_SLEEPER_ID_2022 = "869324695290400768";
     private static final String CAVE_SLEEPER_ID_2023 = "916422844907630592";
     private static final String CAVE_SLEEPER_ID_2024 = "1071255073365331968";
+    private static final List<String> LEAGUE_IDS = List.of(CAVE_SLEEPER_ID_2022, CAVE_SLEEPER_ID_2023, CAVE_SLEEPER_ID_2024);
 
     public static void main(String... args) {
 
         // query Sleeper for data
         Map<String, Player> nflPlayers = FileHelper.getNflPlayers();
         List<Roster> rosters = getAllRosters();
-        List<Matchup> matchups = getAllMatchups();
-        List<Transaction> transactions = getAllTransactions();
+        List<Matchup> matchups = FileHelper.getMatchups(LEAGUE_IDS);
+        List<Transaction> transactions = FileHelper.getTransactions(LEAGUE_IDS);
 
         logger.info("{} rosters", rosters.size());
         logger.info("{} nfl players", nflPlayers.size());
@@ -45,49 +43,15 @@ public class Main {
 
         CalcMatchups.calcMatchups(rosters, nflPlayers, matchups, users);
 
-    }
-
-    private static List<Matchup> getAllMatchups() {
-        List<Matchup> matchups = new ArrayList<>();
-        for (int round = 0; round < 20; round++) {
-            try {
-                List<Matchup> newMatchups = List.of(
-                        SleeperRest.getMatchups(CAVE_SLEEPER_ID_2022, String.format("%s", round)),
-                        SleeperRest.getMatchups(CAVE_SLEEPER_ID_2023, String.format("%s", round)),
-                        SleeperRest.getMatchups(CAVE_SLEEPER_ID_2024, String.format("%s", round))
-                ).stream().flatMap(Collection::stream)
-                        .distinct()
-                        .collect(Collectors.toList());
-
-                matchups.addAll(newMatchups);
-            } catch (Exception ignored) {
-
-            }
-        }
-
-        return matchups;
-    }
-
-
-    private static List<Transaction> getAllTransactions() {
-        List<Transaction> transactions = new ArrayList<>();
-        for (int round = 0; round < 20; round++) {
-            try {
-                List<Transaction> newTransactions = List.of(
-                        SleeperRest.getTransactions(CAVE_SLEEPER_ID_2022, String.format("%s", round)),
-                        SleeperRest.getTransactions(CAVE_SLEEPER_ID_2023, String.format("%s", round)),
-                        SleeperRest.getTransactions(CAVE_SLEEPER_ID_2024, String.format("%s", round))
-                ).stream().flatMap(Collection::stream)
-                        .distinct()
-                        .collect(Collectors.toList());
-
-                transactions.addAll(newTransactions);
-            } catch (Exception ignored) {
-
-            }
-        }
-
-        return transactions;
+        // players whose first and last name start with the same letter
+        List<String> playersName = nflPlayers.values().stream()
+                .filter(p -> matchups.stream()
+                        .anyMatch(m -> m.getPlayerPoints().containsKey(p.getPlayerId())))
+                .filter(p -> p.getFirstName().charAt(0) == p.getLastName().charAt(0))
+                .sorted(Comparator.comparing(Player::getName))
+                .map(Player::getName)
+                .collect(Collectors.toList());
+        logger.info(playersName);
     }
 
     private static List<Roster> getAllRosters() {
