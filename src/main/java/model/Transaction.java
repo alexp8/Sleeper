@@ -67,6 +67,8 @@ public class Transaction {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class WaiverBudget {
         private int amount;
+        private int receiver;
+        private int sender;
     }
 
     @Getter

@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
 
 public class SleeperRest {
+    private static final Logger logger = LogManager.getLogger();
 
     public static String getNflPlayersJson() {
 
@@ -50,6 +53,18 @@ public class SleeperRest {
         }
 
         return response.jsonPath().getList("", Transaction.class);
+    }
+
+    public static String getTransactionsJson(String leagueId, String round) {
+
+        String url = String.format("https://api.sleeper.app/v1/league/%s/transactions/%s", leagueId, round);
+        Response response = getResponse(url);
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed fetching transactions: " + response.getBody());
+        }
+
+        return response.getBody().asPrettyString();
     }
 
     public static List<User> getUsers(String leagueId) {

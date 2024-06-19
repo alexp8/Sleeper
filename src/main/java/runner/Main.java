@@ -7,6 +7,7 @@ import model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.SleeperRest;
+import util.DataHelper;
 import util.FileHelper;
 
 import java.util.*;
@@ -20,13 +21,16 @@ public class Main {
     private static final String CAVE_SLEEPER_ID_2024 = "1071255073365331968";
     private static final List<String> LEAGUE_IDS = List.of(CAVE_SLEEPER_ID_2022, CAVE_SLEEPER_ID_2023, CAVE_SLEEPER_ID_2024);
 
+    /**
+     * The first time this code is run, will query data from sleeper and store the data in src/main/resources/
+     */
     public static void main(String... args) {
 
         // query Sleeper for data
-        Map<String, Player> nflPlayers = FileHelper.getNflPlayers();
+        Map<String, Player> nflPlayers = DataHelper.getNflPlayers(false);
         List<Roster> rosters = getAllRosters();
-        List<Matchup> matchups = FileHelper.getMatchups(LEAGUE_IDS);
-        List<Transaction> transactions = FileHelper.getTransactions(LEAGUE_IDS);
+        List<Matchup> matchups = DataHelper.getMatchups(LEAGUE_IDS, false);
+        List<Transaction> transactions = DataHelper.getTransactions(LEAGUE_IDS, false);
 
         logger.info("{} rosters", rosters.size());
         logger.info("{} nfl players", nflPlayers.size());
@@ -51,7 +55,7 @@ public class Main {
                 .sorted(Comparator.comparing(Player::getName))
                 .map(Player::getName)
                 .collect(Collectors.toList());
-        logger.info(playersName);
+        logger.info("Players whose name starts with same letter {}", playersName);
     }
 
     private static List<Roster> getAllRosters() {
