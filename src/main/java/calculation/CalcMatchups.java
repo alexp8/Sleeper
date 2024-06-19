@@ -32,6 +32,34 @@ public class CalcMatchups extends Calculation {
         // close matchups
         closeMatchups(matchups, users, rosters);
 
+        // most pts on bench
+        mostPointsOnBench(matchups, users, rosters);
+
+    }
+
+    private static void mostPointsOnBench(List<Matchup> matchups, List<User> users, List<Roster> rosters) {
+
+        // iterate over every user
+        users.forEach(user -> {
+
+            // get this user's roster
+            Roster roster = Roster.getUserRoster(rosters, user.getUserId());
+
+            // calculate how many total pts scored on bench
+            double totalBenchPoints = matchups.stream()
+                    .filter(matchup -> matchup.getPoints() > 0)
+                    .filter(matchup -> matchup.getRosterId() == roster.getRosterId())
+                    .flatMap(matchup -> matchup.getPlayerPoints().entrySet().stream()
+                            .filter(entry -> !matchup.getStarters().contains(entry.getKey()))
+                            .map(Map.Entry::getValue)
+                    )
+                    .mapToDouble(Double::doubleValue)
+                    .sum();
+
+            logger.info("{} has {} total points scored on bench", user.getName(), totalBenchPoints);
+        });
+
+        logger.info("");
     }
 
     private static void closeMatchups(List<Matchup> matchups, List<User> users, List<Roster> rosters) {
@@ -69,7 +97,7 @@ public class CalcMatchups extends Calculation {
 
         logger.info("Number of losses by 10 pts or less: {}", closeLossesPerUser.toString());
 
-
+        logger.info("");
     }
 
     private static void cumulativeRosterPointCalculation(List<Roster> rosters, List<Matchup> matchups, List<User> users, List<String> runningBackIds, List<String> quarterBackIds, List<String> wideReceiverIds, List<String> tightEndIds, List<Metric> metrics) {
@@ -192,6 +220,8 @@ public class CalcMatchups extends Calculation {
         Metric mostCumulativeUserDonuts = metrics.stream()
                 .max(Comparator.comparing(x -> x.numDonuts)).get();
         logger.info("{} got the most donuts {}", mostCumulativeUserDonuts.name, mostCumulativeUserDonuts.numDonuts);
+
+        logger.info("");
     }
 
     private static void weeklyPeakPts(Map<String, Player> nflPlayers, List<Matchup> matchups) {
@@ -263,6 +293,8 @@ public class CalcMatchups extends Calculation {
                 .limit(10)
                 .collect(Collectors.toList());
         logger.info("Most RB pts: {}", peakRbPts.stream().map(x -> x.name + ", pts=" + x.maxMatchupPts).collect(Collectors.joining(",")));
+
+        logger.info("");
     }
 
     @Builder

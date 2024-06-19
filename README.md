@@ -23,3 +23,4 @@
 - Closest loss
 - Number of losses by less than 10 pts
 - Players whose first and last name starts with same letter
+- Points scored from bench
