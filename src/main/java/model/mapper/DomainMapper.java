@@ -49,6 +49,31 @@ public class DomainMapper {
   }
 
   /**
+   * Convert a League DTO to a League domain model.
+   *
+   * @param dto the League DTO from API
+   * @return League domain model
+   */
+  public static League toLeague(LeagueDto dto) {
+    if (dto == null) {
+      return null;
+    }
+
+    return League.builder()
+        .leagueId(dto.getLeagueId())
+        .name(dto.getName())
+        .season(dto.getSeason())
+        .seasonType(dto.getSeasonType())
+        .status(dto.getStatus())
+        .sport(dto.getSport())
+        .totalRosters(dto.getTotalRosters())
+        .avatar(dto.getAvatar())
+        .previousLeagueId(dto.getPreviousLeagueId())
+        .draftId(dto.getDraftId())
+        .build();
+  }
+
+  /**
    * Convert a User DTO to a User domain model.
    *
    * @param dto the User DTO from API

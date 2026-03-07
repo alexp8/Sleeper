@@ -1,0 +1,149 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Waiver Analysis Report - Sleeper Analytics{% endblock %}
+
+{% block heading %}Waiver Analysis Report{% endblock %}
+
+{% block content %}
+
+<!-- Overview Section -->
+<div class="stat-card">
+    <h2 style="margin-top: 0; border: none;">Overview</h2>
+    <p><strong>Total Waivers:</strong> {{ report.totalWaivers }}</p>
+</div>
+
+<!-- User Waiver Statistics -->
+<h2>User Waiver Statistics</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Total Waivers</th>
+            <th>RBs Waivered</th>
+            <th>QBs Waivered</th>
+            <th>WRs Waivered</th>
+            <th>TEs Waivered</th>
+            <th>Total FAB Spent</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stats in report.userWaiverStats %}
+        <tr>
+            <td><strong>{{ stats.userName }}</strong></td>
+            <td>{{ stats.totalWaivers }}</td>
+            <td>{{ stats.waiveredForRbs }}</td>
+            <td>{{ stats.waiveredForQbs }}</td>
+            <td>{{ stats.waiveredForWrs }}</td>
+            <td>{{ stats.waiveredForTes }}</td>
+            <td>{{ stats.totalFabSpent }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Most Waivered Players Overall -->
+{% if report.mostWaiveredPlayers is not empty %}
+<h2>Most Waivered Players</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Waivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostWaiveredPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Most Waivered RBs -->
+{% if report.mostWaiveredRbs is not empty %}
+<h2>Most Waivered Running Backs</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Waivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostWaiveredRbs %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Most Waivered QBs -->
+{% if report.mostWaiveredQbs is not empty %}
+<h2>Most Waivered Quarterbacks</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Waivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostWaiveredQbs %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Most Waivered WRs -->
+{% if report.mostWaiveredWrs is not empty %}
+<h2>Most Waivered Wide Receivers</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Waivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostWaiveredWrs %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Most Waivered TEs -->
+{% if report.mostWaiveredTes is not empty %}
+<h2>Most Waivered Tight Ends</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Waivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostWaiveredTes %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

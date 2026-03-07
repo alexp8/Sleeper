@@ -53,6 +53,7 @@ public class Main {
     Map<String, Player> nflPlayers = DataHelper.getNflPlayers(options.isForceRefresh());
     List<Roster> rosters = getRosters(selectedLeagueIds);
     String latestLeagueId = getLatestLeagueId(options);
+    model.League league = DomainMapper.toLeague(SleeperRest.getLeague(latestLeagueId));
     List<User> users =
         SleeperRest.getUsers(latestLeagueId).stream().map(DomainMapper::toUser).toList();
 
@@ -96,6 +97,9 @@ public class Main {
     if (options.shouldRunAnalysis(CommandLineOptions.AnalysisType.MATCHUPS)) {
       ReportService.generateMatchupReport(rosters, nflPlayers, matchups, users);
     }
+
+    // Generate league overview report (index page)
+    ReportService.generateLeagueReport(league, users, options.getYears().stream().toList());
 
     log.info("All analyses complete!");
   }

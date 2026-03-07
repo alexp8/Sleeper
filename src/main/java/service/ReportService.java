@@ -3,6 +3,7 @@ package service;
 import calculation.CalcMatchups;
 import calculation.CalcTrades;
 import calculation.CalcWaivers;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import model.Player;
 import model.Roster;
 import model.Transaction;
 import model.User;
+import model.report.LeagueReport;
 import model.report.MatchupReport;
 import model.report.TradeReport;
 import model.report.WaiverReport;
@@ -36,6 +38,43 @@ public class ReportService {
   private static final String WAIVERS_FILE = "waiver_report.json";
   private static final String MATCHUPS_DIR = "matchups";
   private static final String MATCHUPS_FILE = "matchup_report.json";
+
+  /**
+   * Generate league overview report and persist to file system.
+   *
+   * <p>This creates the main landing page with league information and links to all other reports.
+   *
+   * @param league league information from Sleeper API
+   * @param users list of users in the league
+   * @param years list of years covered in the analysis
+   */
+  public static void generateLeagueReport(model.League league, List<User> users, List<Integer> years) {
+    log.info("Generating league overview report...");
+
+    List<String> memberNames = users.stream()
+        .map(User::getName)
+        .sorted()
+        .toList();
+
+    LeagueReport report = LeagueReport.builder()
+        .generatedAt(LocalDateTime.now())
+        .leagueName(league.getName())
+        .currentSeason(league.getSeason())
+        .seasonType(league.getSeasonType())
+        .status(league.getStatus())
+        .totalRosters(league.getTotalRosters())
+        .years(years.stream().sorted().toList())
+        .members(memberNames)
+        .totalMembers(memberNames.size())
+        .earliestYear(years.stream().min(Integer::compareTo).orElse(0).toString())
+        .latestYear(years.stream().max(Integer::compareTo).orElse(0).toString())
+        .build();
+
+    // Generate HTML report (no JSON needed for overview)
+    util.TemplateRenderer.renderReport(report, "index.html", "", "index.html");
+
+    log.info("League overview report written to index.html");
+  }
 
   /**
    * Generate trade analysis report and persist to file system.
@@ -68,6 +107,8 @@ public class ReportService {
   /**
    * Generate waiver analysis report and persist to file system.
    *
+   * <p>Generates both JSON and HTML formats for the waiver report.
+   *
    * @param rosters list of rosters
    * @param nflPlayers map of NFL players
    * @param transactions list of transactions
@@ -81,12 +122,21 @@ public class ReportService {
 
     log.info("Running waiver analysis...");
     WaiverReport report = CalcWaivers.calcWaivers(rosters, nflPlayers, transactions, users);
+
+    // Generate JSON report
     persistReport(report, WAIVERS_DIR, WAIVERS_FILE);
-    log.info("Waiver report written to {}/{}", WAIVERS_DIR, WAIVERS_FILE);
+
+    // Generate HTML report
+    util.TemplateRenderer.renderReport(
+        report, "waivers.html", WAIVERS_DIR, "waiver_report.html");
+
+    log.info("Waiver reports (JSON and HTML) written to {}", WAIVERS_DIR);
   }
 
   /**
    * Generate matchup analysis report and persist to file system.
+   *
+   * <p>Generates both JSON and HTML formats for the matchup report.
    *
    * <p>Also performs additional analysis on players with matching first/last initials.
    *
@@ -103,8 +153,15 @@ public class ReportService {
 
     log.info("Running matchup analysis...");
     MatchupReport report = CalcMatchups.calcMatchups(rosters, nflPlayers, matchups, users);
+
+    // Generate JSON report
     persistReport(report, MATCHUPS_DIR, MATCHUPS_FILE);
-    log.info("Matchup report written to {}/{}", MATCHUPS_DIR, MATCHUPS_FILE);
+
+    // Generate HTML report
+    util.TemplateRenderer.renderReport(
+        report, "matchups.html", MATCHUPS_DIR, "matchup_report.html");
+
+    log.info("Matchup reports (JSON and HTML) written to {}", MATCHUPS_DIR);
 
     // Additional analysis: Find players whose first and last name start with same letter
     logPlayersWithMatchingInitials(nflPlayers, matchups);

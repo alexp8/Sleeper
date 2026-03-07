@@ -92,6 +92,28 @@ public class SleeperRest {
   }
 
   /**
+   * Fetches league information for a specific league.
+   *
+   * @param leagueId the league identifier
+   * @return LeagueDto object containing league information
+   * @throws SleeperApiException if the API request fails
+   * @throws IllegalArgumentException if leagueId is null or empty
+   */
+  public static LeagueDto getLeague(String leagueId) {
+    validateParameter(leagueId, "leagueId");
+
+    String url = String.format("%s/league/%s", BASE_URL, leagueId);
+    String responseBody = HttpService.get(url, "Failed fetching league");
+
+    try {
+      return OBJECT_MAPPER.readValue(responseBody, LeagueDto.class);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to parse league response", e);
+      throw new SleeperApiException("Failed to parse league response", e);
+    }
+  }
+
+  /**
    * Fetches all users in a specific league.
    *
    * @param leagueId the league identifier

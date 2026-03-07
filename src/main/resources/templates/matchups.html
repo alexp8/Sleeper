@@ -1,0 +1,202 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Matchup Analysis Report - Sleeper Analytics{% endblock %}
+
+{% block heading %}Matchup Analysis Report{% endblock %}
+
+{% block content %}
+
+<!-- Overview Section -->
+<div class="stat-card">
+    <h2 style="margin-top: 0; border: none;">Overview</h2>
+    <p><strong>Total Matchups:</strong> {{ report.totalMatchups }}</p>
+</div>
+
+<!-- User Matchup Statistics -->
+<h2>User Matchup Statistics</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Total Points</th>
+            <th>RB Points</th>
+            <th>WR Points</th>
+            <th>TE Points</th>
+            <th>QB Points</th>
+            <th>Donuts</th>
+            <th>Bench Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stats in report.userMatchupStats %}
+        <tr>
+            <td><strong>{{ stats.userName }}</strong></td>
+            <td>{{ stats.totalPoints | numberformat("#.##") }}</td>
+            <td>{{ stats.rbPoints | numberformat("#.##") }}</td>
+            <td>{{ stats.wrPoints | numberformat("#.##") }}</td>
+            <td>{{ stats.tePoints | numberformat("#.##") }}</td>
+            <td>{{ stats.qbPoints | numberformat("#.##") }}</td>
+            <td>{{ stats.numDonuts }}</td>
+            <td>{{ stats.totalBenchPoints | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Closest Loss Information -->
+{% if report.closestLoss is not null %}
+<h2>Closest Loss</h2>
+<div class="stat-card">
+    <p><strong>User:</strong> {{ report.closestLoss.userName }}</p>
+    <p><strong>Point Difference:</strong> {{ report.closestLoss.pointDifference | numberformat("#.##") }}</p>
+</div>
+{% endif %}
+
+<!-- Close Loss Counts -->
+{% if report.closeLossCounts is not empty %}
+<h2>Close Loss Counts</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Close Losses</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.closeLossCounts %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak Player Stats - Most Donuts -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.mostDonutPlayers is not empty %}
+<h2>Most Donuts by Player</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Donuts</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.mostDonutPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak Player Stats - Highest Weekly Points -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.highestWeeklyPtsPlayers is not empty %}
+<h2>Highest Weekly Points by Player</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.highestWeeklyPtsPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak QB Points -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.mostQbPtsPlayers is not empty %}
+<h2>Highest QB Performances</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.mostQbPtsPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak RB Points -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.mostRbPtsPlayers is not empty %}
+<h2>Highest RB Performances</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.mostRbPtsPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak WR Points -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.mostWrPtsPlayers is not empty %}
+<h2>Highest WR Performances</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.mostWrPtsPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Peak TE Points -->
+{% if report.peakPlayerStats is not null and report.peakPlayerStats.mostTePtsPlayers is not empty %}
+<h2>Highest TE Performances</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.peakPlayerStats.mostTePtsPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value | numberformat("#.##") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% endblock %}
