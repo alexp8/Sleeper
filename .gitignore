@@ -3,3 +3,5 @@
 /Sleeper.iml
 .idea/
 nul
+/.claude/
+.claude/settings.local.json
