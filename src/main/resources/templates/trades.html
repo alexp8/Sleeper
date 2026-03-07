@@ -1,0 +1,143 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Trade Analysis Report - Sleeper Analytics{% endblock %}
+
+{% block heading %}Trade Analysis Report{% endblock %}
+
+{% block content %}
+
+<!-- Overview Section -->
+<div class="stat-card">
+    <h2 style="margin-top: 0; border: none;">Overview</h2>
+    <p><strong>Total Trades:</strong> {{ report.totalTrades }}</p>
+</div>
+
+<!-- User Trade Statistics -->
+<h2>User Trade Statistics</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Total Trades</th>
+            <th>RBs Traded For</th>
+            <th>QBs Traded For</th>
+            <th>WRs Traded For</th>
+            <th>TEs Traded For</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stats in report.userTradeStats %}
+        <tr>
+            <td><strong>{{ stats.userName }}</strong></td>
+            <td>{{ stats.totalTrades }}</td>
+            <td>{{ stats.tradedForRbs }}</td>
+            <td>{{ stats.tradedForQbs }}</td>
+            <td>{{ stats.tradedForWrs }}</td>
+            <td>{{ stats.tradedForTes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Beans Statistics -->
+<h2>Beans Trading Activity</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Beans Received</th>
+            <th>Beans Spent</th>
+            <th>Net Beans</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stats in report.beansStats %}
+        <tr>
+            <td><strong>{{ stats.userName }}</strong></td>
+            <td>{{ stats.beansReceived }}</td>
+            <td>{{ stats.beansSpent }}</td>
+            <td class="{% if stats.netBeans > 0 %}highlight{% endif %}">
+                {{ stats.netBeans > 0 ? '+' : '' }}{{ stats.netBeans }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Most Traded Players Overall -->
+<h2>Most Traded Players</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Traded</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostTradedPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Most Traded RBs -->
+<h2>Most Traded Running Backs</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Traded</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostTradedRbs %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Most Traded QBs -->
+<h2>Most Traded Quarterbacks</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Traded</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostTradedQbs %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Most Dropped Players -->
+<h2>Most Dropped Players</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Times Dropped</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in report.mostDroppedPlayers %}
+        <tr>
+            <td><strong>{{ entry.key }}</strong></td>
+            <td>{{ entry.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

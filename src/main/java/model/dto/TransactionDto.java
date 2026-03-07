@@ -1,0 +1,85 @@
+package model.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * DTO for Transaction data from Sleeper API. Pure data transfer object with minimal business logic,
+ * only Jackson mapping and defensive null handling.
+ */
+@Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TransactionDto {
+
+  @JsonProperty("status_updated")
+  private long status_updated;
+
+  private long created;
+
+  @JsonProperty("roster_ids")
+  private List<Long> rosterIds;
+
+  @JsonProperty("consenter_ids")
+  private List<Long> consenterIds;
+
+  @JsonProperty("drops")
+  private Map<String, Integer> drops;
+
+  @JsonProperty("adds")
+  private Map<String, Integer> adds;
+
+  private Type type;
+  private Status status;
+
+  @JsonProperty("waiver_budget")
+  private List<WaiverBudget> waiverBudget;
+
+  public Map<String, Integer> getAdds() {
+    return adds != null ? adds : new HashMap<>();
+  }
+
+  private Settings settings;
+
+  public void setType(String val) {
+    if (val != null) this.type = Type.valueOf(val.toUpperCase());
+  }
+
+  public void setStatus(String val) {
+    if (val != null) this.status = Status.valueOf(val.toUpperCase());
+  }
+
+  public enum Type {
+    TRADE,
+    WAIVER,
+    COMMISSIONER,
+    FREE_AGENT
+  }
+
+  public enum Status {
+    COMPLETE,
+    FAILED
+  }
+
+  @Getter
+  @Setter
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class WaiverBudget {
+    private int amount;
+    private int receiver;
+    private int sender;
+  }
+
+  @Getter
+  @Setter
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class Settings {
+    @JsonProperty("waiver_bid")
+    private int waiverBid;
+  }
+}
