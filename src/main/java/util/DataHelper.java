@@ -28,7 +28,7 @@ public class DataHelper {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final int MAX_ROUNDS = 20;
-  private static final Path DATA_DIRECTORY = Paths.get("output");
+  private static final Path DATA_DIRECTORY = Paths.get("sleeper_data");
 
   /**
    * Fetches all NFL players from cache or API and maps them to domain models.
